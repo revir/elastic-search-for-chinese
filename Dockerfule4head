@@ -1,0 +1,4 @@
+# this file is uploaded on c.163.com
+# the generated image address: hub.c.163.com/riveryang/elasticsearch-head-5.x:5
+
+FROM mobz/elasticsearch-head:5
