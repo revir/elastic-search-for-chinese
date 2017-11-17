@@ -19,6 +19,10 @@ services:
           memory: 4g
   kibana:
     image: hub.c.163.com/riveryang/kibana-5.6.4:5.6.4
+    ports:
+      - "5601:5601"
+    networks:
+      - esnet
     volumes:
       - ./kibana.yml:/usr/share/kibana/config/kibana.yml
 
