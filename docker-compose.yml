@@ -20,8 +20,9 @@ services:
     volumes:
       - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - esdata:/usr/share/elasticsearch/data
-      
-    ports:
+
+    ports:   # The image exposes TCP ports 9200 and 9300. For clusters it is recommended to randomize the published ports with --publish-all, 
+             # unless you are pinning one container per host.
       - "9200:9200"
     networks:
       - esnet
@@ -37,6 +38,8 @@ services:
 
   kibana:
     image: hub.c.163.com/riveryang/kibana-5.6.4:5.6.4
+    environment: 
+      ELASTICSEARCH_URL: http://elasticsearch:9200
     ports:
       - "5601:5601"
     networks:
