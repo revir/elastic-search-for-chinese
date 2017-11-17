@@ -1,0 +1,27 @@
+version: "3"
+services:
+  elasticsearch:
+    image: hub.c.163.com/riveryang/elasticsearch-ik-5.6.4:latest
+    environment:
+      - cluster.name=docker-cluster
+      # - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    ports:
+      - "9200:9200"
+    networks:
+      - esnet
+    deploy:
+      resources:
+        limits:
+          memory: 4g
+  kibana:
+    image: hub.c.163.com/riveryang/kibana-5.6.4:5.6.4
+    volumes:
+      - ./kibana.yml:/usr/share/kibana/config/kibana.yml
+
+volumes:
+  esdata:
+    driver: local
