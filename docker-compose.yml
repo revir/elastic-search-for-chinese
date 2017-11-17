@@ -1,4 +1,4 @@
-version: "3"
+version: "2"
 services:
   elasticsearch:
     image: hub.c.163.com/riveryang/elasticsearch-ik-5.6.4:latest
@@ -29,10 +29,11 @@ services:
     cpu_percent: 80
     mem_limit: 4g
 
-    deploy: # this is swarm mode only
-      resources:
-        limits:
-          memory: 4g
+    # deploy: # this is swarm mode only and should use v3
+    #   resources:
+    #     limits:
+    #       memory: 4g
+
   kibana:
     image: hub.c.163.com/riveryang/kibana-5.6.4:5.6.4
     ports:
