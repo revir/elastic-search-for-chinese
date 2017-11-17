@@ -3,9 +3,20 @@ services:
   elasticsearch:
     image: hub.c.163.com/riveryang/elasticsearch-ik-5.6.4:latest
     environment:
-      - cluster.name=docker-cluster
-      # - bootstrap.memory_lock=true
+      - cluster.name=docker-cluster 
+      - bootstrap.memory_lock=true   # Swapping needs to be disabled for performance and node stability. 
+                                     # additionally need the memlock=-1:-1 ulimit
       - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+    ulimits:  
+      memlock:
+        soft: -1
+        hard: -1
+
+      nofile:   # It is important to ensure increased ulimits for nofile and nproc are available for the Elasticsearch containers.
+        soft: 65536
+        hard: 65536
+      nproc: 65535
+
     volumes:
       - esdata:/usr/share/elasticsearch/data
       - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
@@ -13,7 +24,12 @@ services:
       - "9200:9200"
     networks:
       - esnet
-    deploy:
+
+    cpu_count: 2  # this is version 2 style, for compose up mode only
+    cpu_percent: 80
+    mem_limit: 4g
+
+    deploy: # this is swarm mode only
       resources:
         limits:
           memory: 4g
@@ -29,3 +45,6 @@ services:
 volumes:
   esdata:
     driver: local
+
+networks:
+  esnet:
