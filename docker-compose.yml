@@ -18,14 +18,15 @@ services:
       nproc: 65535
 
     volumes:
-      - esdata:/usr/share/elasticsearch/data
       - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - esdata:/usr/share/elasticsearch/data
+      
     ports:
       - "9200:9200"
     networks:
       - esnet
 
-    cpu_count: 2  # this is version 2 style, for compose up mode only
+    cpu_count: 2  # this is version 2.3 style, for compose up mode only
     cpu_percent: 80
     mem_limit: 4g
 
@@ -42,6 +43,8 @@ services:
       - esnet
     volumes:
       - ./kibana.yml:/usr/share/kibana/config/kibana.yml
+    depends_on:
+      - elasticsearch
 
 volumes:
   esdata:
