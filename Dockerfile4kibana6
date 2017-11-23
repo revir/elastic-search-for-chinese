@@ -1,0 +1,4 @@
+# this file is uploaded on c.163.com
+# the generated image address: hub.c.163.com/riveryang/kibana-6.0.0:6.0.0
+
+FROM docker.elastic.co/kibana/kibana:6.0.0

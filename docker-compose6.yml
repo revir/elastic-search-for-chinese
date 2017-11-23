@@ -1,0 +1,57 @@
+version: "2.3"
+services:
+  elasticsearch:
+    image: hub.c.163.com/riveryang/elasticsearch-ik-6.0.0:latest
+    environment:
+      - cluster.name=docker-cluster 
+      - bootstrap.memory_lock=true   # Swapping needs to be disabled for performance and node stability. 
+                                     # additionally need the memlock=-1:-1 ulimit
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+    ulimits:  
+      memlock:
+        soft: -1
+        hard: -1
+
+      nofile:   # It is important to ensure increased ulimits for nofile and nproc are available for the Elasticsearch containers.
+        soft: 65536
+        hard: 65536
+      nproc: 65535
+
+    volumes:
+      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - esdata:/usr/share/elasticsearch/data
+
+    ports:   # The image exposes TCP ports 9200 and 9300. For clusters it is recommended to randomize the published ports with --publish-all, 
+             # unless you are pinning one container per host.
+      - "9200:9200"
+    networks:
+      - esnet
+
+    cpu_count: 2  # this is version 2.3 style, for compose up mode only
+    cpu_percent: 80
+    mem_limit: 4g
+
+    # deploy: # this is swarm mode only and should use v3
+    #   resources:
+    #     limits:
+    #       memory: 4g
+
+  kibana:
+    image: hub.c.163.com/riveryang/kibana-6.0.0:6.0.0
+    environment: 
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    networks:
+      - esnet
+    volumes:
+      - ./kibana.yml:/usr/share/kibana/config/kibana.yml
+    depends_on:
+      - elasticsearch
+
+volumes:
+  esdata:
+    driver: local
+
+networks:
+  esnet:
